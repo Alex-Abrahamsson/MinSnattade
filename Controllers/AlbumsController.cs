@@ -41,6 +41,18 @@ namespace Inlamningsuppgift_Marie.Controllers
             return new OkObjectResult(await _albumservice.GetAllAlbumsAsync());
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateAlbum(int id, Album request)
+        {
+            var item = await _albumservice.UpdateAlbumAsync(id, request);
+            if (item != null)
+            {
+                return new OkObjectResult(item);
+            }
+
+            return new BadRequestResult();
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteAlbum(int id)
         {

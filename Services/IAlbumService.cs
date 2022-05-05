@@ -8,7 +8,8 @@ namespace Inlamningsuppgift_Marie.Services
 {
     public interface IAlbumService
     {
-        public Task<CreateAlbumModel> CreateAlbumAsync(CreateAlbumModel request);
+        public Task<NewAlbumModel> CreateAlbumAsync(CreateAlbumModel request);
+        public Task<AlbumEntity> UpdateAlbumAsync(int id, Album request);
         public Task<IEnumerable<Album>> GetAllAlbumsAsync();
         public Task<bool> DeleteAlbumAsync(int id);
     }
@@ -31,7 +32,7 @@ namespace Inlamningsuppgift_Marie.Services
             _mapper = mapper;
         }
 
-        public async Task<CreateAlbumModel> CreateAlbumAsync(CreateAlbumModel request)
+        public async Task<NewAlbumModel> CreateAlbumAsync(CreateAlbumModel request)
         {
             if (!await _databaseContext.Albums.AnyAsync(x => x.AlbumName == request.AlbumName))
             {
@@ -39,11 +40,9 @@ namespace Inlamningsuppgift_Marie.Services
 
                 await _databaseContext.AddAsync(albumEntity);
                 await _databaseContext.SaveChangesAsync();
-                return _mapper.Map<CreateAlbumModel>(albumEntity);
+                return _mapper.Map<NewAlbumModel>(albumEntity);
             }
-
             return null;
-
         }
 
         public async Task<bool> DeleteAlbumAsync(int id)
@@ -78,6 +77,20 @@ namespace Inlamningsuppgift_Marie.Services
                 });
 
             return albums;*/
+        }
+
+        public async Task<AlbumEntity> UpdateAlbumAsync(int id, Album request)
+        {
+            //FirstOrDefaultAsync(x => x.AlbumId == id);
+            var albumEntity = await _databaseContext.Albums.FirstOrDefaultAsync(x => x.AlbumId == id);
+            if (albumEntity != null)
+            {
+                _databaseContext.Entry(albumEntity).State = EntityState.Modified;
+                await _databaseContext.SaveChangesAsync();
+                return _mapper.Map<AlbumEntity>(albumEntity);
+            }
+
+            return null;
         }
     }
 }
