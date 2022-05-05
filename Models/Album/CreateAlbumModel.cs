@@ -4,5 +4,6 @@
     {
         public string AlbumName { get; set; } = null!;
         public int ArtistId { get; set; }
+
     }
 }

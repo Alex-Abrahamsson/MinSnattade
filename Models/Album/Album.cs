@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string AlbumName { get; set; } = null!;
         public string ArtistName { get; set; } = null!;
-        public int SongsQuantity { get; set; }
+        public int SongQuantity { get; set; }
     }
 }
