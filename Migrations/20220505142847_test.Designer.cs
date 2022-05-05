@@ -3,6 +3,7 @@ using Inlamningsuppgift_Marie.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inlamningsuppgift_Marie.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220505142847_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,10 +37,6 @@ namespace Inlamningsuppgift_Marie.Migrations
 
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ArtistName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SongQuantity")
                         .HasColumnType("int");
@@ -73,17 +71,12 @@ namespace Inlamningsuppgift_Marie.Migrations
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", b =>
                 {
                     b.HasOne("Inlamningsuppgift_Marie.Data.Entities.ArtistEntity", "Artist")
-                        .WithMany("Albums")
+                        .WithMany()
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Artist");
-                });
-
-            modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.ArtistEntity", b =>
-                {
-                    b.Navigation("Albums");
                 });
 #pragma warning restore 612, 618
         }

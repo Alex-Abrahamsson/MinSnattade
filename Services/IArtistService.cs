@@ -9,7 +9,7 @@ namespace Inlamningsuppgift_Marie.Services
     public interface IArtistService
     {
         // skapa en artist
-        public Task<Artist> CreateArtistAsync(CreateArtistModel request);
+        public Task<NewArtistModel> CreateArtistAsync(CreateArtistModel request);
         public Task<IEnumerable<Artist>> GetAllArtistsAsync();
     }
 
@@ -29,17 +29,15 @@ namespace Inlamningsuppgift_Marie.Services
             _databaseContext = databaseContext;
             _mapper = mapper;
         }
-
-        public async Task<Artist> CreateArtistAsync(CreateArtistModel request)
+        public async Task<NewArtistModel> CreateArtistAsync(CreateArtistModel request)
         {
             if (!await _databaseContext.Artists.AnyAsync(x => x.ArtistName == request.Name))
             {
                 var artistEntity = _mapper.Map<ArtistEntity>(request);
 
-                _databaseContext.Add(artistEntity);
+                await _databaseContext.AddAsync(artistEntity);
                 await _databaseContext.SaveChangesAsync();
-
-                return _mapper.Map<Artist>(request);
+                return _mapper.Map<NewArtistModel>(artistEntity);
             }
 
             return null;
@@ -52,6 +50,14 @@ namespace Inlamningsuppgift_Marie.Services
 
         public async Task<IEnumerable<Artist>> GetAllArtistsAsync()
         {
+            return _mapper.Map<IEnumerable<Artist>>(await _databaseContext.Artists.ToListAsync());
+
+
+
+            // .Include(x => x.Albums)
+
+            /* FUNKAR UTAN MAPPER
+             * 
             var artists = new List<Artist>();
             foreach (var item in await _databaseContext.Artists.ToListAsync())
                 artists.Add(new Artist
@@ -61,7 +67,7 @@ namespace Inlamningsuppgift_Marie.Services
                     AlbumQuantity = item.AlbumQuatity
                 });
 
-            return artists;
+            return artists;*/
         }
     }
 }

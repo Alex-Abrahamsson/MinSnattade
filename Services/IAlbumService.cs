@@ -8,10 +8,16 @@ namespace Inlamningsuppgift_Marie.Services
 {
     public interface IAlbumService
     {
-        public Task<Album> CreateAlbumAsync(CreateAlbumModel request);
+        public Task<CreateAlbumModel> CreateAlbumAsync(CreateAlbumModel request);
         public Task<IEnumerable<Album>> GetAllAlbumsAsync();
-
+        public Task<bool> DeleteAlbumAsync(int id);
     }
+
+
+
+
+
+
 
 
     public class AlbumService : IAlbumService
@@ -25,35 +31,53 @@ namespace Inlamningsuppgift_Marie.Services
             _mapper = mapper;
         }
 
-
-        //skapa ett album
-        public async Task<Album> CreateAlbumAsync(CreateAlbumModel request)
+        public async Task<CreateAlbumModel> CreateAlbumAsync(CreateAlbumModel request)
         {
             if (!await _databaseContext.Albums.AnyAsync(x => x.AlbumName == request.AlbumName))
             {
                 var albumEntity = _mapper.Map<AlbumEntity>(request);
 
-                _databaseContext.Add(albumEntity);
+                await _databaseContext.AddAsync(albumEntity);
                 await _databaseContext.SaveChangesAsync();
-
-                return _mapper.Map<Album>(request);
+                return _mapper.Map<CreateAlbumModel>(albumEntity);
             }
+
             return null;
+
+        }
+
+        public async Task<bool> DeleteAlbumAsync(int id)
+        {
+            var albumEntity = await _databaseContext.Albums.FindAsync(id);
+            if (albumEntity != null)
+            {
+                _databaseContext.Remove(albumEntity);
+                await _databaseContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
         {
+            return _mapper.Map<IEnumerable<Album>>(await _databaseContext.Albums.Include(x => x.Artist).ToListAsync());
+
+            // .Include(x => x.Artist)
+
+
+            // returnera en model på det som skall vara med istället kanske?
+            /* FUNKAR UTAN MAPPER
             var albums = new List<Album>();
-            foreach (var item in await _databaseContext.Albums.ToListAsync())
+            foreach (var item in await _databaseContext.Albums.Include(x => x.Artist).ToListAsync())
                 albums.Add(new Album
                 {
                     Id = item.AlbumId,
                     AlbumName = item.AlbumName,
-                    ArtistName = item.ArtistName,
-                    SongQuantity = item.SongQuantity
+                    ArtistId = item.ArtistId,
+                    ArtistName = item.Artist.ArtistName
                 });
 
-            return albums;
+            return albums;*/
         }
     }
 }

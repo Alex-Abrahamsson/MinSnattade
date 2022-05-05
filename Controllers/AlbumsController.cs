@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Inlamningsuppgift_Marie.Data;
 using Inlamningsuppgift_Marie.Models.Album;
 using Inlamningsuppgift_Marie.Services;
 using Microsoft.AspNetCore.Http;
@@ -11,22 +12,24 @@ namespace Inlamningsuppgift_Marie.Controllers
     public class AlbumsController : ControllerBase
     {
         private readonly IAlbumService _albumservice;
+        private readonly DatabaseContext _databaseContext;
         private readonly IMapper _mapper;
 
-        public AlbumsController(IAlbumService albumservice, IMapper mapper)
+        public AlbumsController(IAlbumService albumservice, IMapper mapper, DatabaseContext databaseContext)
         {
             _albumservice = albumservice;
             _mapper = mapper;
+            _databaseContext = databaseContext;
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAlbumAsync(CreateAlbumModel request)
+        public async Task<ActionResult> CreateAlbum(CreateAlbumModel request)
         {
-            var artistExists = await _albumservice.CreateAlbumAsync(request);
-            var newArtist = _mapper.Map<Album>(request);
-            if (artistExists != null)
+
+            var albumExists = await _albumservice.CreateAlbumAsync(request);
+            if (albumExists != null)
             {
-                return new OkObjectResult(newArtist);
+                return new OkObjectResult(albumExists);
             }
 
             return new BadRequestResult();
@@ -37,5 +40,15 @@ namespace Inlamningsuppgift_Marie.Controllers
         {
             return new OkObjectResult(await _albumservice.GetAllAlbumsAsync());
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteAlbum(int id)
+        {
+            if (await _albumservice.DeleteAlbumAsync(id))
+                return new OkResult();
+
+            return new NotFoundResult();
+        }
+
     }
 }

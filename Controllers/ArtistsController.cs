@@ -23,12 +23,9 @@ namespace Inlamningsuppgift_Marie.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateArtist(CreateArtistModel request)
         {
-            var artistExists = await _service.CreateArtistAsync(request);
-            var newArtist = _mapper.Map<Artist>(request);
-            if (artistExists != null)
-            {
-                return new OkObjectResult(newArtist);
-            }
+            var result = await _service.CreateArtistAsync(request);
+            if (result != null)
+                return new OkObjectResult(result);
 
             return new BadRequestResult();
         }

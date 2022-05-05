@@ -12,5 +12,6 @@ namespace Inlamningsuppgift_Marie.Data.Entities
 
         [Required]
         public int AlbumQuatity { get; set; }
+        public ICollection<AlbumEntity> Albums { get; set; } = null!;
     }
 }
