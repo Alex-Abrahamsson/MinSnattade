@@ -14,9 +14,6 @@ namespace Inlamningsuppgift_Marie.Data.Entities
         public int ArtistId { get; set; }
 
         [Required]
-        public string ArtistName { get; set; } = null!;
-
-        [Required]
         public int SongQuantity { get; set; }
 
         // ett album kan ha en artist??
