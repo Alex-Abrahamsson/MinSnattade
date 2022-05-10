@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Inlamningsuppgift_Marie.Data;
+using Inlamningsuppgift_Marie.Models;
 using Inlamningsuppgift_Marie.Models.Album;
 using Inlamningsuppgift_Marie.Services;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,6 @@ namespace Inlamningsuppgift_Marie.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAlbum(CreateAlbumModel request)
         {
-
             var albumExists = await _albumservice.CreateAlbumAsync(request);
             if (albumExists != null)
             {
@@ -33,6 +33,15 @@ namespace Inlamningsuppgift_Marie.Controllers
             }
 
             return new BadRequestResult();
+        }
+
+        [HttpGet("{albumId:int}")]
+        public async Task<ActionResult<Album>> GetAlbumById(int albumId)
+        {
+            var album = await _albumservice.GetAlbumByIdAsync(albumId);
+            //var artist = await _databaseContext.Artists.FindAsync(album.ArtistId);
+            //album.ArtistName = artist.ArtistName;
+            return Ok(album);
         }
 
         [HttpGet]

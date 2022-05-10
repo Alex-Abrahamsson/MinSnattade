@@ -35,5 +35,16 @@ namespace Inlamningsuppgift_Marie.Controllers
         {
             return new OkObjectResult(await _service.GetAllArtistsAsync());
         }
+
+        [HttpGet("{artistId:int}")]
+        public async Task<ActionResult> GetArtistById(int artistId)
+        {
+            //return new OkObjectResult(await _service.GetArtistByIdAsync(id));
+            //var artist = await _databaseContext.Artists.FindAsync(album.ArtistId);
+            //album.ArtistName = artist.ArtistName;
+            var artist = await _service.GetArtistByIdAsync(artistId);
+            return Ok(artist);
+
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Inlamningsuppgift_Marie.Data;
 using Inlamningsuppgift_Marie.Data.Entities;
 using Inlamningsuppgift_Marie.Models.Album;
+using Inlamningsuppgift_Marie.Models.Artist;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inlamningsuppgift_Marie.Services
@@ -10,6 +11,8 @@ namespace Inlamningsuppgift_Marie.Services
     {
         public Task<NewAlbumModel> CreateAlbumAsync(CreateAlbumModel request);
         public Task<AlbumEntity> UpdateAlbumAsync(int id, Album request);
+
+        public Task<Album> GetAlbumByIdAsync(int albumId);
         public Task<IEnumerable<Album>> GetAllAlbumsAsync();
         public Task<bool> DeleteAlbumAsync(int id);
     }
@@ -37,9 +40,9 @@ namespace Inlamningsuppgift_Marie.Services
             if (!await _databaseContext.Albums.AnyAsync(x => x.AlbumName == request.AlbumName))
             {
                 var albumEntity = _mapper.Map<AlbumEntity>(request);
-
                 await _databaseContext.AddAsync(albumEntity);
                 await _databaseContext.SaveChangesAsync();
+
                 return _mapper.Map<NewAlbumModel>(albumEntity);
             }
             return null;
@@ -57,11 +60,12 @@ namespace Inlamningsuppgift_Marie.Services
             return false;
         }
 
-        public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
+        public async Task<Album> GetAlbumByIdAsync(int albumId)
         {
-            return _mapper.Map<IEnumerable<Album>>(await _databaseContext.Albums.Include(x => x.Artist).ToListAsync());
-
-            // .Include(x => x.Artist)
+            //return _mapper.Map<Album>(await _databaseContext.Albums.FindAsync(albumId));
+            var albumEnitie = await _databaseContext.Albums.FindAsync(albumId);
+            albumEnitie.Artist = await _databaseContext.Artists.FindAsync(albumEnitie.ArtistId);
+            return _mapper.Map<Album>(albumEnitie);
 
 
             // returnera en model på det som skall vara med istället kanske?
@@ -79,9 +83,15 @@ namespace Inlamningsuppgift_Marie.Services
             return albums;*/
         }
 
+        public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
+        {
+            return _mapper.Map<IEnumerable<Album>>(await _databaseContext.Albums.Include(x => x.Artist).ToListAsync());
+        }
+
+
+
         public async Task<AlbumEntity> UpdateAlbumAsync(int id, Album request)
         {
-            //FirstOrDefaultAsync(x => x.AlbumId == id);
             var albumEntity = await _databaseContext.Albums.FirstOrDefaultAsync(x => x.AlbumId == id);
             if (albumEntity != null)
             {
