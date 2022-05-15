@@ -10,8 +10,13 @@ namespace Inlamningsuppgift_Marie.Data.Entities
         [Required]
         public string ArtistName { get; set; } = null!;
 
-        [Required]
-        public int AlbumQuatity { get; set; }
+        public int AlbumQuantity
+        {
+            get
+            {
+                return Albums == null ? 0 : Albums.Count;
+            }
+        }
         public ICollection<AlbumEntity> Albums { get; set; } = null!;
     }
 }

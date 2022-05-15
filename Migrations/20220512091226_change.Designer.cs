@@ -3,6 +3,7 @@ using Inlamningsuppgift_Marie.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inlamningsuppgift_Marie.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220512091226_change")]
+    partial class change
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,11 +38,14 @@ namespace Inlamningsuppgift_Marie.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SongQuantity")
+                        .HasColumnType("int");
+
                     b.HasKey("AlbumId");
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("Albums");
+                    b.ToTable("AlbumEntity");
                 });
 
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.ArtistEntity", b =>
@@ -51,6 +56,9 @@ namespace Inlamningsuppgift_Marie.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArtistId"), 1L, 1);
 
+                    b.Property<int>("AlbumQuatity")
+                        .HasColumnType("int");
+
                     b.Property<string>("ArtistName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -58,32 +66,6 @@ namespace Inlamningsuppgift_Marie.Migrations
                     b.HasKey("ArtistId");
 
                     b.ToTable("Artists");
-                });
-
-            modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.SongEntity", b =>
-                {
-                    b.Property<int>("SongId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SongId"), 1L, 1);
-
-                    b.Property<int>("AlbumId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SongLength")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SongName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SongId");
-
-                    b.HasIndex("AlbumId");
-
-                    b.ToTable("Songs");
                 });
 
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", b =>
@@ -95,22 +77,6 @@ namespace Inlamningsuppgift_Marie.Migrations
                         .IsRequired();
 
                     b.Navigation("Artist");
-                });
-
-            modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.SongEntity", b =>
-                {
-                    b.HasOne("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", "Album")
-                        .WithMany("Songs")
-                        .HasForeignKey("AlbumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Album");
-                });
-
-            modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", b =>
-                {
-                    b.Navigation("Songs");
                 });
 
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.ArtistEntity", b =>

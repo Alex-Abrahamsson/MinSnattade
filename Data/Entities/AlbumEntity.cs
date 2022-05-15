@@ -13,10 +13,15 @@ namespace Inlamningsuppgift_Marie.Data.Entities
         [Required]
         public int ArtistId { get; set; }
 
-        [Required]
-        public int SongQuantity { get; set; }
+        public int SongQuantity 
+        {
+            get
+            {
+                return Songs == null ? 0 : Songs.Count;
+            }
+        }
 
-        // ett album kan ha en artist??
         public virtual ArtistEntity Artist { get; set; } = null!;
+        public ICollection<SongEntity> Songs { get; set; } = null!;
     }
 }

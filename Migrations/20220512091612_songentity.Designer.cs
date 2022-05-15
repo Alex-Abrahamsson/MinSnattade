@@ -3,6 +3,7 @@ using Inlamningsuppgift_Marie.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inlamningsuppgift_Marie.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220512091612_songentity")]
+    partial class songentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +38,9 @@ namespace Inlamningsuppgift_Marie.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SongQuantity")
+                        .HasColumnType("int");
+
                     b.HasKey("AlbumId");
 
                     b.HasIndex("ArtistId");
@@ -50,6 +55,9 @@ namespace Inlamningsuppgift_Marie.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArtistId"), 1L, 1);
+
+                    b.Property<int>("AlbumQuatity")
+                        .HasColumnType("int");
 
                     b.Property<string>("ArtistName")
                         .IsRequired()
@@ -71,6 +79,13 @@ namespace Inlamningsuppgift_Marie.Migrations
                     b.Property<int>("AlbumId")
                         .HasColumnType("int");
 
+                    b.Property<int>("AlbumsAlbumId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ArtistName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SongLength")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -81,7 +96,7 @@ namespace Inlamningsuppgift_Marie.Migrations
 
                     b.HasKey("SongId");
 
-                    b.HasIndex("AlbumId");
+                    b.HasIndex("AlbumsAlbumId");
 
                     b.ToTable("Songs");
                 });
@@ -99,18 +114,13 @@ namespace Inlamningsuppgift_Marie.Migrations
 
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.SongEntity", b =>
                 {
-                    b.HasOne("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", "Album")
-                        .WithMany("Songs")
-                        .HasForeignKey("AlbumId")
+                    b.HasOne("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", "Albums")
+                        .WithMany()
+                        .HasForeignKey("AlbumsAlbumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Album");
-                });
-
-            modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", b =>
-                {
-                    b.Navigation("Songs");
+                    b.Navigation("Albums");
                 });
 
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.ArtistEntity", b =>

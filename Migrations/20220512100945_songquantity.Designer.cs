@@ -3,6 +3,7 @@ using Inlamningsuppgift_Marie.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inlamningsuppgift_Marie.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220512100945_songquantity")]
+    partial class songquantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,6 +73,13 @@ namespace Inlamningsuppgift_Marie.Migrations
                     b.Property<int>("AlbumId")
                         .HasColumnType("int");
 
+                    b.Property<int>("AlbumsAlbumId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ArtistName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SongLength")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -81,7 +90,7 @@ namespace Inlamningsuppgift_Marie.Migrations
 
                     b.HasKey("SongId");
 
-                    b.HasIndex("AlbumId");
+                    b.HasIndex("AlbumsAlbumId");
 
                     b.ToTable("Songs");
                 });
@@ -99,13 +108,13 @@ namespace Inlamningsuppgift_Marie.Migrations
 
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.SongEntity", b =>
                 {
-                    b.HasOne("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", "Album")
+                    b.HasOne("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", "Albums")
                         .WithMany("Songs")
-                        .HasForeignKey("AlbumId")
+                        .HasForeignKey("AlbumsAlbumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Album");
+                    b.Navigation("Albums");
                 });
 
             modelBuilder.Entity("Inlamningsuppgift_Marie.Data.Entities.AlbumEntity", b =>

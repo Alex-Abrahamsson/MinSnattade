@@ -17,5 +17,6 @@ namespace Inlamningsuppgift_Marie.Data
 
         public virtual DbSet<ArtistEntity> Artists { get; set; } = null!;
         public virtual DbSet<AlbumEntity> Albums { get; set; } = null!;
+        public virtual DbSet<SongEntity> Songs { get; set; } = null!;
     }
 }

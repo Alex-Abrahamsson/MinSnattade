@@ -1,0 +1,51 @@
+﻿using AutoMapper;
+using Inlamningsuppgift_Marie.Models.Song;
+using Inlamningsuppgift_Marie.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Inlamningsuppgift_Marie.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SongsController : ControllerBase
+    {
+        private readonly ISongService _service;
+        private readonly IMapper _mapper;
+
+        public SongsController(ISongService service, IMapper mapper)
+        {
+            _service = service;
+            _mapper = mapper;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateSong(CreateSongModel request)
+        {
+            var songExists = await _service.CreateSongAsync(request);
+            if (songExists != null)
+            {
+                return new OkObjectResult(songExists);
+            }
+
+            return new BadRequestResult();
+        }
+
+        [HttpGet("{songId:int}")]
+        public async Task<ActionResult> GetSongById(int songId)
+        {
+            var song = await _service.GetSongByIdAsync(songId);
+            return Ok(song);
+
+        }
+
+        [HttpDelete("{songId:int}")]
+        public async Task<ActionResult> DeleteSongById(int songId)
+        {
+            if (await _service.DeleteSongByIdAsync(songId))
+                return new OkResult();
+
+            return new NotFoundResult();
+        }
+    }
+}

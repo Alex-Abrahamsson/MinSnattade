@@ -7,5 +7,7 @@
         public int ArtistId { get; set; }
         public string ArtistName { get; set; } = null!;
         public int SongQuantity { get; set; }
+
+        public List<Song.Song> Songs { get; set; } = null!;
     }
 }

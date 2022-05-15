@@ -11,7 +11,9 @@ namespace Inlamningsuppgift_Marie.Services
     {
         public Task<Artist> CreateArtistAsync(CreateArtistModel request);
         public Task<IEnumerable<Artist>> GetAllArtistsAsync();
-        public Task<Artist> GetArtistByIdAsync(int id);
+        public Task<Artist> GetArtistByIdAsync(int artistId);
+        public Task<bool> DeleteArtistByIdAsync(int artistId);
+
     }
 
 
@@ -44,13 +46,12 @@ namespace Inlamningsuppgift_Marie.Services
             return _mapper.Map<IEnumerable<Artist>>(await _databaseContext.Artists.ToListAsync());
         }
 
-        public async Task<Artist> GetArtistByIdAsync(int artisId)
+        public async Task<Artist> GetArtistByIdAsync(int artistId)
         {
-            // Include(x => x.ArtistId == id)
-            var artistEntity = await _databaseContext.Artists.FindAsync(artisId);
+            var artistEntity = await _databaseContext.Artists.Include(x => x.Albums).FirstOrDefaultAsync(x=> x.ArtistId == artistId);
             if (artistEntity != null)
             {
-                artistEntity.ArtistId = artisId;
+                //artistEntity.ArtistId = artisId;
                 // skall returnera en lista på albumName och albumId
                 //artistEntity.ArtistId = artisId;
                 //await _databaseContext.SaveChangesAsync();
@@ -60,6 +61,17 @@ namespace Inlamningsuppgift_Marie.Services
             }
 
             return null!;
+        }
+        public async Task<bool> DeleteArtistByIdAsync(int artistId)
+        {
+            var artistEntity = await _databaseContext.Artists.FindAsync(artistId);
+            if (artistEntity!= null)
+            {
+                _databaseContext.Remove(artistEntity);
+                await _databaseContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

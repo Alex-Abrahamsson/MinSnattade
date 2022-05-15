@@ -42,9 +42,18 @@ namespace Inlamningsuppgift_Marie.Controllers
             //return new OkObjectResult(await _service.GetArtistByIdAsync(id));
             //var artist = await _databaseContext.Artists.FindAsync(album.ArtistId);
             //album.ArtistName = artist.ArtistName;
+
             var artist = await _service.GetArtistByIdAsync(artistId);
             return Ok(artist);
+        }
 
+        [HttpDelete("{artistId:int}")]
+        public async Task<ActionResult> DeleteArtistById(int artistId)
+        {
+            if (await _service.DeleteArtistByIdAsync(artistId))
+                return new OkResult();
+
+            return new NotFoundResult();
         }
     }
 }

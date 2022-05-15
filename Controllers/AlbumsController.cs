@@ -62,10 +62,10 @@ namespace Inlamningsuppgift_Marie.Controllers
             return new BadRequestResult();
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> DeleteAlbum(int id)
+        [HttpDelete("{albumId:int}")]
+        public async Task<ActionResult> DeleteAlbum(int albumId)
         {
-            if (await _albumservice.DeleteAlbumAsync(id))
+            if (await _albumservice.DeleteAlbumAsync(albumId))
                 return new OkResult();
 
             return new NotFoundResult();

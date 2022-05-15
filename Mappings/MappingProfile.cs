@@ -2,6 +2,7 @@
 using Inlamningsuppgift_Marie.Data.Entities;
 using Inlamningsuppgift_Marie.Models.Album;
 using Inlamningsuppgift_Marie.Models.Artist;
+using Inlamningsuppgift_Marie.Models.Song;
 
 namespace Inlamningsuppgift_Marie.Mappings
 {
@@ -30,6 +31,24 @@ namespace Inlamningsuppgift_Marie.Mappings
             .ForMember(x => x.Id, opt => opt.MapFrom(x => x.AlbumId))
             .ForMember(x => x.ArtistName, opt => opt.MapFrom(x => x.Artist.ArtistName))
             .ReverseMap();
+
+            // SONG
+            CreateMap<CreateSongModel, SongEntity>()
+            .ForMember(x => x.SongLength, opt => opt.MapFrom(x => x.Length))
+            .ReverseMap();
+
+            CreateMap<NewSongModel, SongEntity>()
+            .ReverseMap();
+           
+            CreateMap<Song, SongEntity>()
+            .ForMember(x => x.SongId, opt => opt.MapFrom(x => x.Id))
+            .ForMember(x => x.SongLength, opt => opt.MapFrom(x => x.Length))
+            .ReverseMap();
+
+            /*
+            CreateMap<Album, Song>()
+            .ForMember(x => x.AlbumId, opt => opt.MapFrom(x => x.Id))
+            .ReverseMap();*/
         }
     }
 }

@@ -18,6 +18,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<IArtistService, ArtistService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
+builder.Services.AddScoped<ISongService, SongService>();
 
 var app = builder.Build();
 
