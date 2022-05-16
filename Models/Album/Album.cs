@@ -1,4 +1,6 @@
-﻿namespace Inlamningsuppgift_Marie.Models.Album
+﻿using Inlamningsuppgift_Marie.Models.Song;
+
+namespace Inlamningsuppgift_Marie.Models.Album
 {
     public class Album
     {
@@ -8,6 +10,6 @@
         public string ArtistName { get; set; } = null!;
         public int SongQuantity { get; set; }
 
-        public List<Song.Song> Songs { get; set; } = null!;
+        public List<ReadSongModel> Songs { get; set; } = null!;
     }
 }

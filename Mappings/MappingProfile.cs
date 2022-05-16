@@ -14,6 +14,7 @@ namespace Inlamningsuppgift_Marie.Mappings
             CreateMap<CreateArtistModel, ArtistEntity>()
             .ForMember(x => x.ArtistName, opt => opt.MapFrom(x => x.Name))
             .ReverseMap();
+
             CreateMap<ArtistEntity, Artist>()
             .ForMember(x => x.Id, opt => opt.MapFrom(x => x.ArtistId))
             .ReverseMap();
@@ -23,7 +24,7 @@ namespace Inlamningsuppgift_Marie.Mappings
             .ForMember(x => x.AlbumName, opt => opt.MapFrom(x => x.AlbumName))
             .ReverseMap();
 
-            CreateMap<NewAlbumModel, AlbumEntity>()
+            CreateMap<AlbumEntity, NewAlbumModel>()
             .ForMember(x => x.AlbumName, opt => opt.MapFrom(x => x.AlbumName))
             .ReverseMap();
 
@@ -39,11 +40,13 @@ namespace Inlamningsuppgift_Marie.Mappings
 
             CreateMap<NewSongModel, SongEntity>()
             .ReverseMap();
-           
-            CreateMap<Song, SongEntity>()
-            .ForMember(x => x.SongId, opt => opt.MapFrom(x => x.Id))
-            .ForMember(x => x.SongLength, opt => opt.MapFrom(x => x.Length))
-            .ReverseMap();
+
+            CreateMap<SongEntity, ReadSongModel>();
+
+            CreateMap<SongEntity, Song>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.SongId))
+                .ForMember(x => x.Length, opt => opt.MapFrom(x => x.SongLength))
+                .ForMember(x => x.ArtistName, opt => opt.MapFrom(x => x.Album.Artist.ArtistName));
 
             /*
             CreateMap<Album, Song>()

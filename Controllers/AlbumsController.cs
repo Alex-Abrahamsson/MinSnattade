@@ -51,7 +51,7 @@ namespace Inlamningsuppgift_Marie.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAlbum(int id, Album request)
+        public async Task<ActionResult> UpdateAlbum(int id, CreateAlbumModel request)
         {
             var item = await _albumservice.UpdateAlbumAsync(id, request);
             if (item != null)

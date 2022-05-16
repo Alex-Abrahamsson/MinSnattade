@@ -1,4 +1,4 @@
-﻿//using Inlamningsuppgift_Marie.Models.Album;
+﻿
 namespace Inlamningsuppgift_Marie.Models.Artist
 {
     public class Artist

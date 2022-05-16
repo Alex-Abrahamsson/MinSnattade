@@ -10,8 +10,9 @@ namespace Inlamningsuppgift_Marie.Services
     public interface IAlbumService
     {
         public Task<NewAlbumModel> CreateAlbumAsync(CreateAlbumModel request);
-        public Task<AlbumEntity> UpdateAlbumAsync(int id, Album request);
+        public Task<Album> UpdateAlbumAsync(int id, CreateAlbumModel request);
 
+        //Album
         public Task<Album> GetAlbumByIdAsync(int albumId);
         public Task<IEnumerable<Album>> GetAllAlbumsAsync();
         public Task<bool> DeleteAlbumAsync(int albumId);
@@ -39,8 +40,9 @@ namespace Inlamningsuppgift_Marie.Services
         {
             if (!await _databaseContext.Albums.AnyAsync(x => x.AlbumName == request.AlbumName))
             {
+                if (await _databaseContext.Artists.FindAsync(request.ArtistId) is null) return null;
+
                 var albumEntity = _mapper.Map<AlbumEntity>(request);
-                //await _databaseContext.AddAsync(albumEntity);
                 _databaseContext.Add(albumEntity);
                 await _databaseContext.SaveChangesAsync();
 
@@ -63,16 +65,9 @@ namespace Inlamningsuppgift_Marie.Services
 
         public async Task<Album> GetAlbumByIdAsync(int albumId)
         {
-            /* MED DENNA DEL FÅR JAG UT NAMN PÅ ARTISTEN OSV MEN DÅ FUNKAR INTE SONGQUANTITY OCH LISTAN PÅ SONGS
-             * =============================================================================================
-             * var albumEnitie = await _databaseContext.Albums.FindAsync(albumId);
-            albumEnitie.Artist = await _databaseContext.Artists.FindAsync(albumEnitie.ArtistId);
 
-            return _mapper.Map<Album>(albumEnitie);
-            ================================================================================================*/
-
-            // MED DENNA DEL FÅR JAG UT SÅ SOM DET SKA VARA MEN NULL PÅ ARTISTNAME OCH LENGTH
-            var albumEntity = await _databaseContext.Albums.Include(x => x.Songs).FirstOrDefaultAsync(x => x.AlbumId == albumId);
+            // MED DENNA DEL FÅR JAG NULL PÅ ARTISTNAME
+            var albumEntity = await _databaseContext.Albums.Include(x => x.Songs).Include(x => x.Artist).FirstOrDefaultAsync(x => x.AlbumId == albumId);
             if (albumEntity != null)
             {
                 return _mapper.Map<Album>(albumEntity);
@@ -88,14 +83,17 @@ namespace Inlamningsuppgift_Marie.Services
 
 
 
-        public async Task<AlbumEntity> UpdateAlbumAsync(int id, Album request)
+        public async Task<Album> UpdateAlbumAsync(int id, CreateAlbumModel request)
         {
-            var albumEntity = await _databaseContext.Albums.FirstOrDefaultAsync(x => x.AlbumId == id);
+            var albumEntity = await _databaseContext.Albums.Include(x => x.Songs).Include(x => x.Artist).FirstOrDefaultAsync(x => x.AlbumId == id);
             if (albumEntity != null)
             {
+                if (await _databaseContext.Artists.FindAsync(request.ArtistId) is null) return null;
+
+                _mapper.Map(request, albumEntity);
                 _databaseContext.Entry(albumEntity).State = EntityState.Modified;
                 await _databaseContext.SaveChangesAsync();
-                return _mapper.Map<AlbumEntity>(albumEntity);
+                return _mapper.Map<Album>(albumEntity);
             }
 
             return null;

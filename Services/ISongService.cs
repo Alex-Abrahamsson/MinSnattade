@@ -37,14 +37,15 @@ namespace Inlamningsuppgift_Marie.Services
 
                 return _mapper.Map<NewSongModel>(songEntity);
             }
+
             return null;
         }
 
         public async Task<Song> GetSongByIdAsync(int songId)
         {
 
-            // MED DEN HÄR FÅR JAG UT EN SONG MEN LENGTH OCH ARTISTNAME ÄR NULL SAMT SAKNAS ALBUM NAME, ARTIST ID = KANSKE ÄNDRA SONG TILL NÅGOT?
-            var songEntity = await _databaseContext.Songs.Include(x => x.Album).FirstOrDefaultAsync(x => x.SongId == songId);
+            // ALBUM NAME, ARTIST ID SAKNAS = KANSKE ÄNDRA SONG TILL NÅGOT?
+            var songEntity = await _databaseContext.Songs.Include(x => x.Album).ThenInclude(x => x.Artist).FirstOrDefaultAsync(x => x.SongId == songId);
             if (songEntity != null)
             {
                 return _mapper.Map<Song>(songEntity);
