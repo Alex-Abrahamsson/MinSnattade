@@ -35,8 +35,9 @@ namespace Inlamningsuppgift_Marie.Controllers
             return new BadRequestResult();
         }
 
+        //<ActionResult<Album>>
         [HttpGet("{albumId:int}")]
-        public async Task<ActionResult<Album>> GetAlbumById(int albumId)
+        public async Task<ActionResult> GetAlbumById(int albumId)
         {
             var album = await _albumservice.GetAlbumByIdAsync(albumId);
             //var artist = await _databaseContext.Artists.FindAsync(album.ArtistId);
@@ -44,16 +45,11 @@ namespace Inlamningsuppgift_Marie.Controllers
             return Ok(album);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAlbums()
-        {
-            return new OkObjectResult(await _albumservice.GetAllAlbumsAsync());
-        }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAlbum(int id, CreateAlbumModel request)
+        [HttpPut("{albumId:int}")]
+        public async Task<ActionResult> UpdateAlbum(int albumId, CreateAlbumModel request)
         {
-            var item = await _albumservice.UpdateAlbumAsync(id, request);
+            var item = await _albumservice.UpdateAlbumAsync(albumId, request);
             if (item != null)
             {
                 return new OkObjectResult(item);
@@ -70,6 +66,13 @@ namespace Inlamningsuppgift_Marie.Controllers
 
             return new NotFoundResult();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAlbums()
+        {
+            return new OkObjectResult(await _albumservice.GetAllAlbumsAsync());
+        }
+
 
     }
 }

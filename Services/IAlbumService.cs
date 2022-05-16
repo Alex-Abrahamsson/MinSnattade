@@ -10,12 +10,12 @@ namespace Inlamningsuppgift_Marie.Services
     public interface IAlbumService
     {
         public Task<NewAlbumModel> CreateAlbumAsync(CreateAlbumModel request);
-        public Task<Album> UpdateAlbumAsync(int id, CreateAlbumModel request);
 
-        //Album
         public Task<Album> GetAlbumByIdAsync(int albumId);
-        public Task<IEnumerable<Album>> GetAllAlbumsAsync();
+        public Task<Album> UpdateAlbumAsync(int albumId, CreateAlbumModel request);
         public Task<bool> DeleteAlbumAsync(int albumId);
+        public Task<IEnumerable<Album>> GetAllAlbumsAsync();
+
     }
 
 
@@ -51,18 +51,6 @@ namespace Inlamningsuppgift_Marie.Services
             return null;
         }
 
-        public async Task<bool> DeleteAlbumAsync(int albumId)
-        {
-            var albumEntity = await _databaseContext.Albums.FindAsync(albumId);
-            if (albumEntity != null)
-            {
-                _databaseContext.Remove(albumEntity);
-                await _databaseContext.SaveChangesAsync();
-                return true;
-            }
-            return false;
-        }
-
         public async Task<Album> GetAlbumByIdAsync(int albumId)
         {
             var albumEntity = await _databaseContext.Albums.Include(x => x.Songs).Include(x => x.Artist).FirstOrDefaultAsync(x => x.AlbumId == albumId);
@@ -73,17 +61,9 @@ namespace Inlamningsuppgift_Marie.Services
             return null!;
 
         }
-
-        public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
+        public async Task<Album> UpdateAlbumAsync(int albumId, CreateAlbumModel request)
         {
-            return _mapper.Map<IEnumerable<Album>>(await _databaseContext.Albums.Include(x => x.Artist).ToListAsync());
-        }
-
-
-
-        public async Task<Album> UpdateAlbumAsync(int id, CreateAlbumModel request)
-        {
-            var albumEntity = await _databaseContext.Albums.Include(x => x.Songs).Include(x => x.Artist).FirstOrDefaultAsync(x => x.AlbumId == id);
+            var albumEntity = await _databaseContext.Albums.Include(x => x.Songs).Include(x => x.Artist).FirstOrDefaultAsync(x => x.AlbumId == albumId);
             if (albumEntity != null)
             {
                 if (await _databaseContext.Artists.FindAsync(request.ArtistId) is null) return null;
@@ -96,5 +76,26 @@ namespace Inlamningsuppgift_Marie.Services
 
             return null;
         }
+
+        public async Task<bool> DeleteAlbumAsync(int albumId)
+        {
+            var albumEntity = await _databaseContext.Albums.FindAsync(albumId);
+            if (albumEntity != null)
+            {
+                _databaseContext.Remove(albumEntity);
+                await _databaseContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
+        {
+            return _mapper.Map<IEnumerable<Album>>(await _databaseContext.Albums.Include(x => x.Artist).ToListAsync());
+        }
+
+
+
+
     }
 }

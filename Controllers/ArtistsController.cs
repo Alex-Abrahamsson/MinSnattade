@@ -27,7 +27,7 @@ namespace Inlamningsuppgift_Marie.Controllers
             if (result != null)
                 return new OkObjectResult(result);
 
-            return BadRequest("The artistname is already exists");
+            return BadRequest("The artistname already exists");
             //return new BadRequestResult();
         }
 
@@ -40,12 +40,20 @@ namespace Inlamningsuppgift_Marie.Controllers
         [HttpGet("{artistId:int}")]
         public async Task<ActionResult> GetArtistById(int artistId)
         {
-            //return new OkObjectResult(await _service.GetArtistByIdAsync(id));
-            //var artist = await _databaseContext.Artists.FindAsync(album.ArtistId);
-            //album.ArtistName = artist.ArtistName;
-
             var artist = await _service.GetArtistByIdAsync(artistId);
             return Ok(artist);
+        }
+
+        [HttpPut("{artistId:int}")]
+        public async Task<ActionResult> UpdateArtist(int artistId, CreateArtistModel request)
+        {
+            var item = await _service.UpdateArtistAsync(artistId, request);
+            if (item != null)
+            {
+                return new OkObjectResult(item);
+            }
+
+            return new BadRequestResult();
         }
 
         [HttpDelete("{artistId:int}")]

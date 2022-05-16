@@ -9,9 +9,11 @@ namespace Inlamningsuppgift_Marie.Services
 {
     public interface IArtistService
     {
-        public Task<Artist> CreateArtistAsync(CreateArtistModel request);
+        //Artist
+        public Task<NewArtistModel> CreateArtistAsync(CreateArtistModel request);
         public Task<IEnumerable<Artist>> GetAllArtistsAsync();
         public Task<Artist> GetArtistByIdAsync(int artistId);
+        public Task<Artist> UpdateArtistAsync(int artistId, CreateArtistModel request);
         public Task<bool> DeleteArtistByIdAsync(int artistId);
 
     }
@@ -32,19 +34,10 @@ namespace Inlamningsuppgift_Marie.Services
             _databaseContext = databaseContext;
             _mapper = mapper;
         }
-        public async Task<Artist> CreateArtistAsync(CreateArtistModel request)
+
+        //Artist
+        public async Task<NewArtistModel> CreateArtistAsync(CreateArtistModel request)
         {
-            /* if (!await _databaseContext.Albums.AnyAsync(x => x.AlbumName == request.AlbumName))
-            {
-                if (await _databaseContext.Artists.FindAsync(request.ArtistId) is null) return null;
-
-                var albumEntity = _mapper.Map<AlbumEntity>(request);
-                _databaseContext.Add(albumEntity);
-                await _databaseContext.SaveChangesAsync();
-
-                return _mapper.Map<NewAlbumModel>(albumEntity);
-            }
-            */
             if (!await _databaseContext.Artists.AnyAsync(x => x.ArtistName == request.Name))
             {
                 //if (await _databaseContext.Artists.FindAsync(request.Name) is null) return null;
@@ -53,10 +46,9 @@ namespace Inlamningsuppgift_Marie.Services
 
                 await _databaseContext.AddAsync(artistEntity);
                 await _databaseContext.SaveChangesAsync();
-                return _mapper.Map<Artist>(artistEntity);
+                return _mapper.Map<NewArtistModel>(artistEntity);
             }
             return null;
-
         }
 
         public async Task<IEnumerable<Artist>> GetAllArtistsAsync()
@@ -69,17 +61,26 @@ namespace Inlamningsuppgift_Marie.Services
             var artistEntity = await _databaseContext.Artists.Include(x => x.Albums).FirstOrDefaultAsync(x=> x.ArtistId == artistId);
             if (artistEntity != null)
             {
-                //artistEntity.ArtistId = artisId;
-                // skall returnera en lista på albumName och albumId
-                //artistEntity.ArtistId = artisId;
-                //await _databaseContext.SaveChangesAsync();
-
                 return _mapper.Map<Artist>(artistEntity);
-
             }
 
             return null!;
         }
+
+        public async Task<Artist> UpdateArtistAsync(int artistId, CreateArtistModel request)
+        {
+            var artistEntity = await _databaseContext.Artists.Include(x => x.Albums).FirstOrDefaultAsync(x => x.ArtistId == artistId);
+            if (artistEntity != null)
+            {
+                _mapper.Map(request, artistEntity);
+                _databaseContext.Entry(artistEntity).State = EntityState.Modified;
+                await _databaseContext.SaveChangesAsync();
+                return _mapper.Map<Artist>(artistEntity);
+            }
+
+            return null;
+        }
+
         public async Task<bool> DeleteArtistByIdAsync(int artistId)
         {
             var artistEntity = await _databaseContext.Artists.FindAsync(artistId);

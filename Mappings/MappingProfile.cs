@@ -15,9 +15,14 @@ namespace Inlamningsuppgift_Marie.Mappings
             .ForMember(x => x.ArtistName, opt => opt.MapFrom(x => x.Name))
             .ReverseMap();
 
+            
             CreateMap<ArtistEntity, Artist>()
             .ForMember(x => x.Id, opt => opt.MapFrom(x => x.ArtistId))
             .ReverseMap();
+
+            CreateMap<ArtistEntity, NewArtistModel>()
+            .ReverseMap();
+
 
             // ALBUM
             CreateMap<CreateAlbumModel, AlbumEntity>()

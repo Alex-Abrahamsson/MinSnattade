@@ -39,6 +39,19 @@ namespace Inlamningsuppgift_Marie.Controllers
 
         }
 
+        [HttpPut("{songId:int}")]
+        public async Task<ActionResult> UpdateSong(int songId, CreateSongModel request)
+        {
+            var item = await _service.UpdateSongAsync(songId, request);
+            if (item != null)
+            {
+                return new OkObjectResult(item);
+            }
+
+            return BadRequest("can't find albumId");
+            //return new BadRequestResult();
+        }
+
         [HttpDelete("{songId:int}")]
         public async Task<ActionResult> DeleteSongById(int songId)
         {

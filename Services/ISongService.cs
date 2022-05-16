@@ -10,6 +10,7 @@ namespace Inlamningsuppgift_Marie.Services
     {
         public Task<NewSongModel> CreateSongAsync(CreateSongModel request);
         public Task<Song> GetSongByIdAsync(int songId);
+        public Task<Song> UpdateSongAsync(int songId, CreateSongModel request);
         public Task<bool> DeleteSongByIdAsync(int songId);
     }
 
@@ -65,6 +66,22 @@ namespace Inlamningsuppgift_Marie.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<Song> UpdateSongAsync(int songId, CreateSongModel request)
+        {
+            var songEntity = await _databaseContext.Songs.Include(x => x.Album).ThenInclude(x => x.Artist).FirstOrDefaultAsync(x => x.SongId == songId);
+            if (songEntity != null)
+            {
+                if(await _databaseContext.Albums.FindAsync(request.AlbumId) is null) return null;
+
+                _mapper.Map(request, songEntity);
+                _databaseContext.Entry(songEntity).State = EntityState.Modified;
+                await _databaseContext.SaveChangesAsync();
+                return _mapper.Map<Song>(songEntity);
+            }
+
+            return null;
         }
     }
 }
