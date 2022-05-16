@@ -93,9 +93,5 @@ namespace Inlamningsuppgift_Marie.Services
         {
             return _mapper.Map<IEnumerable<Album>>(await _databaseContext.Albums.Include(x => x.Artist).ToListAsync());
         }
-
-
-
-
     }
 }

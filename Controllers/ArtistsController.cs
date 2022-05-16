@@ -28,7 +28,6 @@ namespace Inlamningsuppgift_Marie.Controllers
                 return new OkObjectResult(result);
 
             return BadRequest("The artistname already exists");
-            //return new BadRequestResult();
         }
 
         [HttpGet]

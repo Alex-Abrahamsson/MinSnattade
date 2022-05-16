@@ -49,14 +49,13 @@ namespace Inlamningsuppgift_Marie.Mappings
             CreateMap<SongEntity, ReadSongModel>();
 
             CreateMap<SongEntity, Song>()
-                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.SongId))
-                .ForMember(x => x.Length, opt => opt.MapFrom(x => x.SongLength))
-                .ForMember(x => x.ArtistName, opt => opt.MapFrom(x => x.Album.Artist.ArtistName));
+            .ForMember(x => x.Id, opt => opt.MapFrom(x => x.SongId))
+            .ForMember(x => x.Length, opt => opt.MapFrom(x => x.SongLength))
+            .ForMember(x => x.ArtistName, opt => opt.MapFrom(x => x.Album.Artist.ArtistName))
+            .ReverseMap();
 
-            /*
-            CreateMap<Album, Song>()
-            .ForMember(x => x.AlbumId, opt => opt.MapFrom(x => x.Id))
-            .ReverseMap();*/
+            CreateMap<CreateSongModel, Song>()
+            .ReverseMap();
         }
     }
 }

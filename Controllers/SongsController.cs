@@ -31,6 +31,12 @@ namespace Inlamningsuppgift_Marie.Controllers
             return new BadRequestResult();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllSongs()
+        {
+            return new OkObjectResult(await _service.GetAllSongsAsync());
+        }
+
         [HttpGet("{songId:int}")]
         public async Task<ActionResult> GetSongById(int songId)
         {
@@ -49,7 +55,6 @@ namespace Inlamningsuppgift_Marie.Controllers
             }
 
             return BadRequest("can't find albumId");
-            //return new BadRequestResult();
         }
 
         [HttpDelete("{songId:int}")]

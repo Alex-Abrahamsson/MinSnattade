@@ -35,13 +35,10 @@ namespace Inlamningsuppgift_Marie.Services
             _mapper = mapper;
         }
 
-        //Artist
         public async Task<NewArtistModel> CreateArtistAsync(CreateArtistModel request)
         {
             if (!await _databaseContext.Artists.AnyAsync(x => x.ArtistName == request.Name))
             {
-                //if (await _databaseContext.Artists.FindAsync(request.Name) is null) return null;
-
                 var artistEntity = _mapper.Map<ArtistEntity>(request);
 
                 await _databaseContext.AddAsync(artistEntity);

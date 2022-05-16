@@ -9,6 +9,7 @@ namespace Inlamningsuppgift_Marie.Services
     public interface ISongService
     {
         public Task<NewSongModel> CreateSongAsync(CreateSongModel request);
+        public Task<IEnumerable<Song>> GetAllSongsAsync();
         public Task<Song> GetSongByIdAsync(int songId);
         public Task<Song> UpdateSongAsync(int songId, CreateSongModel request);
         public Task<bool> DeleteSongByIdAsync(int songId);
@@ -46,8 +47,6 @@ namespace Inlamningsuppgift_Marie.Services
 
         public async Task<Song> GetSongByIdAsync(int songId)
         {
-
-            // ALBUM NAME, ARTIST ID SAKNAS = KANSKE ÄNDRA SONG TILL NÅGOT?
             var songEntity = await _databaseContext.Songs.Include(x => x.Album).ThenInclude(x => x.Artist).FirstOrDefaultAsync(x => x.SongId == songId);
             if (songEntity != null)
             {
@@ -82,6 +81,11 @@ namespace Inlamningsuppgift_Marie.Services
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<Song>> GetAllSongsAsync()
+        {
+            return _mapper.Map<IEnumerable<Song>>(await _databaseContext.Songs.Include(x => x.Album).ThenInclude(x => x.Artist).ToListAsync());
         }
     }
 }

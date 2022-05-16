@@ -35,13 +35,10 @@ namespace Inlamningsuppgift_Marie.Controllers
             return new BadRequestResult();
         }
 
-        //<ActionResult<Album>>
         [HttpGet("{albumId:int}")]
         public async Task<ActionResult> GetAlbumById(int albumId)
         {
             var album = await _albumservice.GetAlbumByIdAsync(albumId);
-            //var artist = await _databaseContext.Artists.FindAsync(album.ArtistId);
-            //album.ArtistName = artist.ArtistName;
             return Ok(album);
         }
 
