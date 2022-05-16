@@ -31,6 +31,8 @@ namespace Inlamningsuppgift_Marie.Services
         {
             if (!await _databaseContext.Songs.AnyAsync(x => x.SongName == request.SongName))
             {
+                if (await _databaseContext.Albums.FindAsync(request.AlbumId) is null) return null;
+
                 var songEntity = _mapper.Map<SongEntity>(request);
                 _databaseContext.Songs.Add(songEntity);
                 await _databaseContext.SaveChangesAsync();

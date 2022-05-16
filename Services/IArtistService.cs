@@ -34,11 +34,29 @@ namespace Inlamningsuppgift_Marie.Services
         }
         public async Task<Artist> CreateArtistAsync(CreateArtistModel request)
         {
+            /* if (!await _databaseContext.Albums.AnyAsync(x => x.AlbumName == request.AlbumName))
+            {
+                if (await _databaseContext.Artists.FindAsync(request.ArtistId) is null) return null;
+
+                var albumEntity = _mapper.Map<AlbumEntity>(request);
+                _databaseContext.Add(albumEntity);
+                await _databaseContext.SaveChangesAsync();
+
+                return _mapper.Map<NewAlbumModel>(albumEntity);
+            }
+            */
+            if (!await _databaseContext.Artists.AnyAsync(x => x.ArtistName == request.Name))
+            {
+                //if (await _databaseContext.Artists.FindAsync(request.Name) is null) return null;
+
                 var artistEntity = _mapper.Map<ArtistEntity>(request);
 
                 await _databaseContext.AddAsync(artistEntity);
                 await _databaseContext.SaveChangesAsync();
                 return _mapper.Map<Artist>(artistEntity);
+            }
+            return null;
+
         }
 
         public async Task<IEnumerable<Artist>> GetAllArtistsAsync()

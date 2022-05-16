@@ -65,8 +65,6 @@ namespace Inlamningsuppgift_Marie.Services
 
         public async Task<Album> GetAlbumByIdAsync(int albumId)
         {
-
-            // MED DENNA DEL FÅR JAG NULL PÅ ARTISTNAME
             var albumEntity = await _databaseContext.Albums.Include(x => x.Songs).Include(x => x.Artist).FirstOrDefaultAsync(x => x.AlbumId == albumId);
             if (albumEntity != null)
             {
