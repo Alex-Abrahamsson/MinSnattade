@@ -69,6 +69,7 @@ namespace Inlamningsuppgift_Marie.Services
             var artistEntity = await _databaseContext.Artists.Include(x => x.Albums).FirstOrDefaultAsync(x => x.ArtistId == artistId);
             if (artistEntity != null)
             {
+                Console.WriteLine("artistEntity");
                 _mapper.Map(request, artistEntity);
                 _databaseContext.Entry(artistEntity).State = EntityState.Modified;
                 await _databaseContext.SaveChangesAsync();
